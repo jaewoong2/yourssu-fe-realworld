@@ -19,6 +19,8 @@ module.exports = {
     '@typescript-eslint/semi': ['error'],
     'no-shadow': ['off', {}],
     'import/prefer-default-export': 'off',
+    'react/prop-types': 'off',
+    'react/require-default-props': 'off',
     indent: ['error', 2],
     'import/extensions': [
       'error',
