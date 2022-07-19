@@ -1,7 +1,7 @@
 import { useFetch } from './useFetch';
 
 type Props = {
-  username?: string
+  email?: string
   password?: string
 };
 
@@ -15,8 +15,8 @@ type Props = {
 //   }
 // };
 
-export const useSignin = ({ username, password }: Props) => useFetch({
-  url: 'https://api.realworld.io/api/login',
+export const useSignin = ({ email, password }: Props) => useFetch({
+  url: 'https://api.realworld.io/api/users/login',
   method: 'POST',
-  body: JSON.stringify({ username, password }),
+  body: JSON.stringify({ user: { email, password } }),
 });

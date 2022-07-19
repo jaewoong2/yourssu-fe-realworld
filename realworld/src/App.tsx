@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import reactLogo from './assets/react.svg';
-
+import React from 'react';
+import Header from './layouts/Header';
 
 function App() {
-  return <></>
+  return <Header />;
 }
 
 export default App;

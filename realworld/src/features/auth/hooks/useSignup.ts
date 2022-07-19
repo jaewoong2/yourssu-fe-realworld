@@ -23,5 +23,5 @@ user: {
 export const useSignup = ({ username, email, password }: Props) => useFetch<ReturnType>({
   url: 'https://api.realworld.io/api/users',
   method: 'POST',
-  body: JSON.stringify({ username, email, password }),
+  body: JSON.stringify({ user: { username, email, password } }),
 });
