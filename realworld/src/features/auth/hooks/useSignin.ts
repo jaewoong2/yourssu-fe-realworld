@@ -1,8 +1,8 @@
 import { useFetch } from './useFetch';
 
 type Props = {
-  email?: string
-  password?: string
+  email?: string;
+  password?: string;
 };
 
 // type ReturnType = {
@@ -15,8 +15,9 @@ type Props = {
 //   }
 // };
 
-export const useSignin = ({ email, password }: Props) => useFetch({
-  url: 'https://api.realworld.io/api/users/login',
-  method: 'POST',
-  body: JSON.stringify({ user: { email, password } }),
-});
+export const useSignin = ({ email, password }: Props) =>
+  useFetch({
+    url: 'https://api.realworld.io/api/users/login',
+    method: 'POST',
+    body: JSON.stringify({ user: { email, password } }),
+  });

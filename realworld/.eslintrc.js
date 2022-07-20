@@ -1,14 +1,20 @@
 module.exports = {
+  root: true,
   env: {
     browser: true,
     es2021: true,
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'airbnb-typescript'],
+  extends: [
+    'airbnb',
+    'airbnb-typescript',
+    'plugin:prettier/recommended', // Make sure this is always the last element in the array.
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
+    project: './tsconfig.eslint.json',
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
@@ -22,6 +28,12 @@ module.exports = {
     'react/prop-types': 'off',
     'react/require-default-props': 'off',
     indent: ['error', 2],
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
     'import/extensions': [
       'error',
       'ignorePackages',

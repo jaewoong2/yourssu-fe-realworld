@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 
 type FetchType = {
-    url: string
-    method: 'POST' | 'GET'
-    body?: string
+  url: string;
+  method: 'POST' | 'GET';
+  body?: string;
 };
 
 export const useFetch = <T = unknown>({ url, method, body }: FetchType) => {
