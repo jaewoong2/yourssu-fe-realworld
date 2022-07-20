@@ -5,7 +5,9 @@ function Header() {
   return (
     <nav className="navbar navbar-light">
       <div className="container">
-        <a className="navbar-brand" href="index.html">conduit</a>
+        <a className="navbar-brand" href="index.html">
+          conduit
+        </a>
         <ul className="nav navbar-nav pull-xs-right">
           <Li liClassName="nav-item" aClassName="nav-link" href="*">
             Home
