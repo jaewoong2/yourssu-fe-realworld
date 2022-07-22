@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useForm } from '../hooks/useForm';
+import Input from './Input';
 
 function LoginForm() {
   const [email, , onChangeEmail] = useForm('');
@@ -19,24 +20,13 @@ function LoginForm() {
               <a href="/">Need an account?</a>
             </p>
             <form onSubmit={handleLogin}>
-              <fieldset className="form-group">
-                <input
-                  onChange={onChangeEmail}
-                  value={email}
-                  className="form-control form-control-lg"
-                  type="text"
-                  placeholder="Email"
-                />
-              </fieldset>
-              <fieldset className="form-group">
-                <input
-                  onChange={onChangePassword}
-                  value={password}
-                  className="form-control form-control-lg"
-                  type="password"
-                  placeholder="Password"
-                />
-              </fieldset>
+              <Input onChange={onChangeEmail} value={email} type="text" placeholder="email" />
+              <Input
+                onChange={onChangePassword}
+                value={password}
+                type="password"
+                placeholder="password"
+              />
               <button type="submit" className="btn btn-lg btn-primary pull-xs-right">
                 Sign in
               </button>
