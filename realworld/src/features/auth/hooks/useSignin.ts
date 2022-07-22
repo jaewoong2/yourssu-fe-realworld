@@ -5,16 +5,6 @@ type Props = {
   password?: string;
 };
 
-// type ReturnType = {
-//   user: {
-//     email: string,
-//     token: string,
-//     username: string,
-//     bio: string,
-//     image: string
-//   }
-// };
-
 export const useSignin = ({ email, password }: Props) =>
   useFetch({
     url: 'https://api.realworld.io/api/users/login',
