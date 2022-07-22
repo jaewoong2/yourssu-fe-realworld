@@ -10,7 +10,17 @@ type UserType = {
   };
 };
 
+const defaultValue: UserType = {
+  user: {
+    email: '',
+    token: '',
+    username: '',
+    bio: '',
+    image: '',
+  },
+};
+
 export const uerState = atom({
   key: 'uerState',
-  default: {} as UserType,
+  default: defaultValue,
 });
