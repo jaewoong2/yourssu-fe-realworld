@@ -5,47 +5,41 @@ import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
 import Input from './Input';
 
-const fetcher = async (url: string, options?: RequestInit): Promise<UserType | Error> => {
+const signInFetch = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}): Promise<UserType | Error> => {
   try {
-    const data = (await fetch(url, { ...options })).json();
-    return await data;
+    const data = await fetch('https://api.realworld.io/api/users/login', {
+      method: 'POST',
+      body: JSON.stringify({ user: { email, password } }),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+
+    return await data.json();
   } catch (err) {
     return err as Error;
   }
 };
 
-function LoginForm() {
+function SigninForm() {
   const [email, , onChangeEmail] = useForm('');
   const [password, , onChangePassword] = useForm('');
-  const data = useQuery<Promise<UserType | Error>, Error>(
-    'login',
-    () =>
-      fetcher('https://api.realworld.io/api/users/login', {
-        method: 'POST',
-        body: JSON.stringify({ user: { email, password } }),
-        headers: {
-          'Content-type': 'application/json',
-        },
-      }),
-    {
-      enabled: false,
-    }
-  );
+  const data = useQuery<null, Error, UserType>('login', () => null, {
+    enabled: false,
+  });
   const queryClient = useQueryClient();
 
   const handleLogin = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
 
-      queryClient.fetchQuery('login', () =>
-        fetcher('https://api.realworld.io/api/users/login', {
-          method: 'POST',
-          body: JSON.stringify({ user: { email, password } }),
-          headers: {
-            'Content-type': 'application/json',
-          },
-        })
-      );
+      queryClient.fetchQuery('login', () => signInFetch({ email, password }));
     },
     [queryClient, email, password]
   );
@@ -82,4 +76,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default SigninForm;

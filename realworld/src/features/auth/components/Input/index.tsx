@@ -1,11 +1,13 @@
 import React, { InputHTMLAttributes } from 'react';
 
-type InputProps = {} & InputHTMLAttributes<HTMLInputElement>;
+type InputProps = {
+  ref?: React.RefObject<HTMLInputElement>;
+} & InputHTMLAttributes<HTMLInputElement>;
 
-function Input({ className, ...props }: InputProps) {
+function Input({ className, ref, ...props }: InputProps) {
   return (
     <fieldset className="form-group">
-      <input className={`form-control form-control-lg ${className}`} {...props} />
+      <input ref={ref} className={`form-control form-control-lg ${className}`} {...props} />
     </fieldset>
   );
 }

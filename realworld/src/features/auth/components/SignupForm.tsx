@@ -4,49 +4,42 @@ import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
 import Input from './Input';
 
+const SignUpFetch = async ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}): Promise<UserType | Error> => {
+  try {
+    const data = await fetch('https://api.realworld.io/api/users', {
+      method: 'POST',
+      body: JSON.stringify({ user: { username, email, password } }),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
+
+    return await data.json();
+  } catch (err) {
+    return err as Error;
+  }
+};
+
 function SignupForm() {
   const [username, , onChangeUsername] = useForm('');
   const [email, , onChangeEmail] = useForm('');
   const [password, , onChangePassword] = useForm('');
 
-  const fetcher = async (url: string, options?: RequestInit): Promise<UserType | Error> => {
-    try {
-      const data = (await fetch(url, { ...options })).json();
-      return await data;
-    } catch (err) {
-      return err as Error;
-    }
-  };
-
-  const data = useQuery<Promise<UserType | Error>, Error>(
-    'signup',
-    () =>
-      fetcher('https://api.realworld.io/api/users', {
-        method: 'POST',
-        body: JSON.stringify({ user: { username, email, password } }),
-        headers: {
-          'Content-type': 'application/json',
-        },
-      }),
-    {
-      enabled: false,
-    }
-  );
+  const data = useQuery<null, Error, UserType>('signup', () => null, { enabled: false });
   const queryClient = useQueryClient();
 
   const handleSignup = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-
-      queryClient.fetchQuery('signup', () =>
-        fetcher('https://api.realworld.io/api/users', {
-          method: 'POST',
-          body: JSON.stringify({ user: { username, email, password } }),
-          headers: {
-            'Content-type': 'application/json',
-          },
-        })
-      );
+      queryClient.fetchQuery('signup', () => SignUpFetch({ username, email, password }));
     },
     [queryClient, username, email, password]
   );
@@ -55,7 +48,7 @@ function SignupForm() {
     console.log(data);
   }, [data]);
 
-  const isEmail = (userEmail: string) => {
+  const validateEmail = (userEmail: string) => {
     const emailRegex =
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
@@ -71,7 +64,7 @@ function SignupForm() {
             <p className="text-xs-center">
               <a href="/">Have an account?</a>
             </p>
-            {isEmail(email) ? null : (
+            {validateEmail(email) ? null : (
               <ul className="error-messages">
                 <li>That email is already taken</li>
               </ul>
