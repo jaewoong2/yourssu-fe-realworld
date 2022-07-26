@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
@@ -14,7 +14,7 @@ const SignUpFetch = async ({
   password: string;
 }): Promise<UserType | Error> => {
   try {
-    const data = await fetch('https://api.realworld.io/api/users', {
+    const data: Response = await fetch('https://api.realworld.io/api/users', {
       method: 'POST',
       body: JSON.stringify({ user: { username, email, password } }),
       headers: {
@@ -22,7 +22,11 @@ const SignUpFetch = async ({
       },
     });
 
-    return await data.json();
+    if (data.status === 200) {
+      return await data.json();
+    }
+
+    throw new Error();
   } catch (err) {
     return err as Error;
   }
@@ -33,7 +37,9 @@ function SignupForm() {
   const [email, , onChangeEmail] = useForm('');
   const [password, , onChangePassword] = useForm('');
 
-  const data = useQuery<null, Error, UserType>('signup', () => null, { enabled: false });
+  const { isError } = useQuery<null, Error, UserType>('signup', () => null, {
+    enabled: false,
+  });
   const queryClient = useQueryClient();
 
   const handleSignup = useCallback(
@@ -43,10 +49,6 @@ function SignupForm() {
     },
     [queryClient, username, email, password]
   );
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   const validateEmail = (userEmail: string) => {
     const emailRegex =
@@ -64,11 +66,12 @@ function SignupForm() {
             <p className="text-xs-center">
               <a href="/">Have an account?</a>
             </p>
-            {validateEmail(email) ? null : (
+            {isError && (
               <ul className="error-messages">
-                <li>That email is already taken</li>
+                <li>오류발생</li>
               </ul>
             )}
+
             <form onSubmit={handleSignup}>
               <Input
                 onChange={onChangeUsername}
@@ -77,6 +80,11 @@ function SignupForm() {
                 placeholder="Your Name"
               />
               <Input onChange={onChangeEmail} value={email} type="text" placeholder="Email" />
+              {!validateEmail(email) && (
+                <ul className="error-messages">
+                  <li>Email Error</li>
+                </ul>
+              )}
               <Input
                 onChange={onChangePassword}
                 value={password}

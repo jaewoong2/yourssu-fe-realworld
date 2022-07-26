@@ -8,6 +8,19 @@ export type UserType = {
     bio: string;
     image: string;
   };
+  errors?: {
+    email?: string[];
+    password?: string[];
+    username?: string[];
+  };
+};
+
+export type ErrorType = {
+  errors: {
+    email?: string[];
+    password?: string[];
+    username?: string[];
+  };
 };
 
 const defaultValue: UserType = {
