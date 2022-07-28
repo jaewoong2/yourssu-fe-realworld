@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
-import { useRecoilState } from 'recoil';
+import React, { useCallback } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { useForm } from '../hooks/useForm';
-import { UserType, userState } from '../recoil/atoms/userState';
+import { UserType } from '../recoil/atoms/userState';
 import Input from './Input';
 
-const SignUpFetch = async ({
+const signUpFetch = async ({
   username,
   email,
   password,
@@ -37,26 +36,18 @@ const SignUpFetch = async ({
 // recoil + usequery
 
 function SignupForm() {
-  const [username, , onChangeUsername] = useForm('');
-  const [email, , onChangeEmail] = useForm('');
-  const [password, , onChangePassword] = useForm('');
+  const [username, , handleUsername] = useForm('');
+  const [email, , handleEmail] = useForm('');
+  const [password, , handlePassword] = useForm('');
 
-  const [, setUser] = useRecoilState(userState);
-
-  const queryData = useQuery<null, Error, UserType>('user', () => null, {
-    enabled: false,
-    onSuccess: (data) => {
-      if (data?.user) {
-        setUser({ user: data.user });
-      }
-    },
-  });
   const queryClient = useQueryClient();
+
+  const { mutate, isError } = useMutation(signUpFetch);
 
   const handleSignup = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      queryClient.fetchQuery('user', () => SignUpFetch({ username, email, password }));
+      mutate({ username, email, password });
     },
     [queryClient, username, email, password]
   );
@@ -64,14 +55,8 @@ function SignupForm() {
   const validateEmail = (userEmail: string) => {
     const emailRegex =
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-
     return emailRegex.test(userEmail);
   };
-
-  useEffect(() => {
-    console.log(queryData);
-    console.log(queryClient);
-  }, [queryData, queryClient]);
 
   return (
     <div className="auth-page">
@@ -82,7 +67,7 @@ function SignupForm() {
             <p className="text-xs-center">
               <a href="/signin">Have an account?</a>
             </p>
-            {queryData.isError && (
+            {isError && (
               <ul className="error-messages">
                 <li>오류발생</li>
               </ul>
@@ -90,19 +75,19 @@ function SignupForm() {
 
             <form onSubmit={handleSignup}>
               <Input
-                onChange={onChangeUsername}
+                onChange={handleUsername}
                 value={username}
                 type="text"
                 placeholder="Your Name"
               />
-              <Input onChange={onChangeEmail} value={email} type="text" placeholder="Email" />
+              <Input onChange={handleEmail} value={email} type="text" placeholder="Email" />
               {!validateEmail(email) && (
                 <ul className="error-messages">
                   <li>Email Error</li>
                 </ul>
               )}
               <Input
-                onChange={onChangePassword}
+                onChange={handlePassword}
                 value={password}
                 type="password"
                 placeholder="Password"

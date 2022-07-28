@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import React, { useCallback } from 'react';
+import { useMutation } from 'react-query';
 import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
 import Input from './Input';
@@ -10,7 +10,7 @@ const signInFetch = async ({
 }: {
   email: string;
   password: string;
-}): Promise<UserType | Error> => {
+}): Promise<UserType | string> => {
   try {
     const data = await fetch('https://api.realworld.io/api/users/login', {
       method: 'POST',
@@ -19,34 +19,33 @@ const signInFetch = async ({
         'Content-type': 'application/json',
       },
     });
+    if (data.ok) {
+      return await data.json();
+    }
 
-    return await data.json();
+    throw new Error('Error');
   } catch (err) {
-    return err as Error;
+    if (err instanceof Error) {
+      return err.message;
+    }
+    return '';
   }
 };
 
 function SigninForm() {
-  const [email, , onChangeEmail] = useForm('');
-  const [password, , onChangePassword] = useForm('');
+  const [email, , handleEmail] = useForm('');
+  const [password, , handlePassword] = useForm('');
 
-  const queryData = useQuery<null, Error, UserType>('user', () => null, {});
-
-  const queryClient = useQueryClient();
+  // CRUD {C, U, D} == { POST, PUT, DELETE }
+  const { mutate } = useMutation(signInFetch);
 
   const handleLogin = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-
-      queryClient.fetchQuery('user', () => signInFetch({ email, password }));
+      mutate({ email, password });
     },
-    [queryClient, email, password]
+    [email, password]
   );
-
-  useEffect(() => {
-    console.log(queryData);
-    console.log(queryClient);
-  }, [queryData, queryClient]);
 
   return (
     <div className="auth-page">
@@ -58,9 +57,9 @@ function SigninForm() {
               <a href="/signup">Need an account?</a>
             </p>
             <form onSubmit={handleLogin}>
-              <Input onChange={onChangeEmail} value={email} type="text" placeholder="email" />
+              <Input onChange={handleEmail} value={email} type="text" placeholder="email" />
               <Input
-                onChange={onChangePassword}
+                onChange={handlePassword}
                 value={password}
                 type="password"
                 placeholder="password"

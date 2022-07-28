@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { LoginNav } from './LoginNav';
-import { NotLoginNav } from './NotLoginNav';
+import NavItemList from '../../components/NavItemList';
 
 function Header() {
-  const [isLoggdin, setIsLoggedIn] = useState(false);
+  const [isLoggedin, setIsLoggedIn] = useState(false);
   // const userData = useSignin({ email, password });
 
   useEffect(() => {
@@ -20,7 +19,7 @@ function Header() {
         <a className="navbar-brand" href="index.html">
           conduit
         </a>
-        {isLoggdin ? <LoginNav /> : <NotLoginNav />}
+        <NavItemList isLoggedin={isLoggedin} />
       </div>
     </nav>
   );
