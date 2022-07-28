@@ -44,6 +44,7 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    'react/jsx-props-no-spreading': [0, {}],
   },
   settings: {
     'import/resolver': {
