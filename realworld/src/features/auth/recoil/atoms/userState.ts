@@ -33,7 +33,7 @@ const defaultValue: UserType = {
   },
 };
 
-export const uerState = atom({
-  key: 'uerState',
+export const userState = atom({
+  key: 'userState',
   default: defaultValue,
 });

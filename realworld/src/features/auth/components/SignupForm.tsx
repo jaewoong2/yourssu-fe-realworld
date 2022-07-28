@@ -1,7 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
+import { useRecoilState } from 'recoil';
 import { useForm } from '../hooks/useForm';
-import { UserType } from '../recoil/atoms/userState';
+import { UserType, userState } from '../recoil/atoms/userState';
 import Input from './Input';
 
 const SignUpFetch = async ({
@@ -32,20 +33,30 @@ const SignUpFetch = async ({
   }
 };
 
+// redux
+// recoil + usequery
+
 function SignupForm() {
   const [username, , onChangeUsername] = useForm('');
   const [email, , onChangeEmail] = useForm('');
   const [password, , onChangePassword] = useForm('');
 
-  const { isError } = useQuery<null, Error, UserType>('signup', () => null, {
+  const [, setUser] = useRecoilState(userState);
+
+  const queryData = useQuery<null, Error, UserType>('user', () => null, {
     enabled: false,
+    onSuccess: (data) => {
+      if (data?.user) {
+        setUser({ user: data.user });
+      }
+    },
   });
   const queryClient = useQueryClient();
 
   const handleSignup = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      queryClient.fetchQuery('signup', () => SignUpFetch({ username, email, password }));
+      queryClient.fetchQuery('user', () => SignUpFetch({ username, email, password }));
     },
     [queryClient, username, email, password]
   );
@@ -57,6 +68,11 @@ function SignupForm() {
     return emailRegex.test(userEmail);
   };
 
+  useEffect(() => {
+    console.log(queryData);
+    console.log(queryClient);
+  }, [queryData, queryClient]);
+
   return (
     <div className="auth-page">
       <div className="container page">
@@ -64,9 +80,9 @@ function SignupForm() {
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">Sign up</h1>
             <p className="text-xs-center">
-              <a href="/">Have an account?</a>
+              <a href="/signin">Have an account?</a>
             </p>
-            {isError && (
+            {queryData.isError && (
               <ul className="error-messages">
                 <li>오류발생</li>
               </ul>

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-
 import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
 import Input from './Input';
@@ -30,23 +29,24 @@ const signInFetch = async ({
 function SigninForm() {
   const [email, , onChangeEmail] = useForm('');
   const [password, , onChangePassword] = useForm('');
-  const data = useQuery<null, Error, UserType>('login', () => null, {
-    enabled: false,
-  });
+
+  const queryData = useQuery<null, Error, UserType>('user', () => null, {});
+
   const queryClient = useQueryClient();
 
   const handleLogin = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
 
-      queryClient.fetchQuery('login', () => signInFetch({ email, password }));
+      queryClient.fetchQuery('user', () => signInFetch({ email, password }));
     },
     [queryClient, email, password]
   );
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    console.log(queryData);
+    console.log(queryClient);
+  }, [queryData, queryClient]);
 
   return (
     <div className="auth-page">
@@ -55,7 +55,7 @@ function SigninForm() {
           <div className="col-md-6 offset-md-3 col-xs-12">
             <h1 className="text-xs-center">Sign in</h1>
             <p className="text-xs-center">
-              <a href="/">Need an account?</a>
+              <a href="/signup">Need an account?</a>
             </p>
             <form onSubmit={handleLogin}>
               <Input onChange={onChangeEmail} value={email} type="text" placeholder="email" />
