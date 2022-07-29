@@ -2,7 +2,7 @@ name: Check the source code
 on:
   pull_request:
     branches:
-      - main
+      - dev
 jobs:
   test:
     name: Check the source code
@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install packages
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - name: Prettier
         run: npm run format
       - name: Lint
