@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-type ClassNameProps = {
+type Props = {
   liClassName?: string;
   aClassName?: string;
   iClassName?: string;
@@ -8,7 +8,7 @@ type ClassNameProps = {
   children: ReactNode;
 };
 
-function Li({ liClassName, aClassName, iClassName, href, children }: ClassNameProps) {
+function NavItem({ liClassName, aClassName, iClassName, href, children }: Props) {
   return (
     <li className={liClassName}>
       <a className={aClassName} href={href}>
@@ -19,4 +19,4 @@ function Li({ liClassName, aClassName, iClassName, href, children }: ClassNamePr
   );
 }
 
-export default Li;
+export default NavItem;
