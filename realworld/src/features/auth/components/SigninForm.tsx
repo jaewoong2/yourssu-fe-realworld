@@ -1,35 +1,28 @@
 import React, { useCallback } from 'react';
 import { useMutation } from 'react-query';
 import { useForm } from '../hooks/useForm';
-import { UserType } from '../recoil/atoms/userState';
+import { UserType, ErrorType } from '../recoil/atoms/userState';
 import Input from './Input';
 
-const signInFetch = async ({
-  email,
-  password,
-}: {
+type SignIn = {
   email: string;
   password: string;
-}): Promise<UserType | string> => {
-  try {
-    const data = await fetch('https://api.realworld.io/api/users/login', {
-      method: 'POST',
-      body: JSON.stringify({ user: { email, password } }),
-      headers: {
-        'Content-type': 'application/json',
-      },
-    });
-    if (data.ok) {
-      return await data.json();
-    }
+};
 
-    throw new Error('Error');
-  } catch (err) {
-    if (err instanceof Error) {
-      return err.message;
-    }
-    return '';
+const signInFetch = async ({ email, password }: SignIn): Promise<UserType | ErrorType> => {
+  const data = await fetch('https://api.realworld.io/api/users/login', {
+    method: 'POST',
+    body: JSON.stringify({ user: { email, password } }),
+    headers: {
+      'Content-type': 'application/json',
+    },
+  });
+
+  if (data.ok) {
+    return data.json();
   }
+
+  throw new Error(await data.json());
 };
 
 function SigninForm() {

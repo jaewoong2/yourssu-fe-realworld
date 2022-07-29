@@ -21,7 +21,6 @@ const signUpFetch = async ({
         'Content-type': 'application/json',
       },
     });
-
     if (data.status === 200) {
       return await data.json();
     }

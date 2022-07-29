@@ -1,17 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-export const useForm = (
-  initialValue: string
-): [
-  string,
-  React.Dispatch<React.SetStateAction<string>>,
-  (e: React.ChangeEvent<HTMLInputElement>) => void
-] => {
+export const useForm = (initialValue: string) => {
+  const ref = useRef<HTMLInputElement | null>(null);
   const [value, setValue] = useState(initialValue);
 
   function onChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
-    setValue(e.target.value);
+    if (ref.current) {
+      ref.current.value = e.target.value;
+    }
   }
 
-  return [value, setValue, onChangeValue];
+  return [value, setValue, onChangeValue] as const;
 };
