@@ -2,15 +2,32 @@ import React, { useCallback } from 'react';
 import { useMutation } from 'react-query';
 import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
+import { z } from 'zod';
 import Input from './Input';
+
+type userResult = z.infer<typeof userResult>;
+const userResult = z.object({
+  user: z.object({
+    email: z.string(),
+    token: z.string(),
+    username: z.string(),
+    bio: z.string(),
+    image: z.string(),
+  }),
+  errors: z.object({
+    email: z.array(z.string()).nullable(),
+    password: z.array(z.string()).nullable(),
+    username: z.array(z.string()).nullable(),
+  }).nullable(),
+})
 
 const signInFetch = async ({
   email,
   password,
-}: {
+} : {
   email: string;
   password: string;
-}): Promise<UserType | string> => {
+}): Promise<userResult | string> => {
   try {
     const data = await fetch('https://api.realworld.io/api/users/login', {
       method: 'POST',
@@ -20,7 +37,7 @@ const signInFetch = async ({
       },
     });
     if (data.ok) {
-      return await data.json();
+      return await userResult.parse(data);
     }
 
     throw new Error('Error');
