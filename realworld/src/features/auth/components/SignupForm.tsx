@@ -2,13 +2,14 @@ import React, { useCallback } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useForm } from '../hooks/useForm';
 import { UserType } from '../recoil/atoms/userState';
+import { z } from 'zod';
 import Input from './Input';
 
 const signUpFetch = async ({
   username,
   email,
   password,
-}: {
+} : {
   username: string;
   email: string;
   password: string;
