@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useMutation } from 'react-query';
 import { useForm } from '../hooks/useForm';
+
 import { UserType } from '../recoil/atoms/userState';
 import { z } from 'zod';
 import Input from './Input';
@@ -40,13 +41,11 @@ const signInFetch = async ({
       return await userResult.parse(data);
     }
 
-    throw new Error('Error');
-  } catch (err) {
-    if (err instanceof Error) {
-      return err.message;
-    }
-    return '';
+  if (data.ok) {
+    return data.json();
   }
+
+  throw new Error(await data.json());
 };
 
 function SigninForm() {

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --config .prettierrc 'src/**/*.{ts,tsx}' --write",
+    "lint": "eslint --ext .tsx --ext .ts src/"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^2.0.0",

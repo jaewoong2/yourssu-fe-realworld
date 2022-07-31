@@ -22,7 +22,6 @@ const signUpFetch = async ({
         'Content-type': 'application/json',
       },
     });
-
     if (data.status === 200) {
       return await data.json();
     }
@@ -43,6 +42,7 @@ function SignupForm() {
 
   const queryClient = useQueryClient();
 
+  // POST PUT DELETE
   const { mutate, isError } = useMutation(signUpFetch);
 
   const handleSignup = useCallback(
