@@ -41,6 +41,7 @@ function SignupForm() {
 
   const queryClient = useQueryClient();
 
+  // POST PUT DELETE
   const { mutate, isError } = useMutation(signUpFetch);
 
   const handleSignup = useCallback(
