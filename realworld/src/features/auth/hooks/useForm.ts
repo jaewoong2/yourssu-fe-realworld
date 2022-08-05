@@ -1,14 +1,12 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
-export const useForm = (initialValue: string) => {
-  const ref = useRef<HTMLInputElement | null>(null);
-  const [value, setValue] = useState(initialValue);
+// 비제어 컴포넌트, 제어 컴포넌트
+export const useForm = () => {
+  const [value, setValue] = useState('');
 
   function onChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
-    if (ref.current) {
-      ref.current.value = e.target.value;
-    }
+    setValue(e.target.value);
   }
 
-  return [value, setValue, onChangeValue] as const;
+  return [value, onChangeValue] as const;
 };
