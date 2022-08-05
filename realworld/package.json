@@ -5,10 +5,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --config .prettierrc 'src/**/*.{ts,tsx}' --write",
+    "lint": "eslint --ext .tsx --ext .ts src/"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^2.0.0",
+    "axios": "^0.27.2",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -17,7 +20,8 @@
     "recoil": "^0.7.4",
     "vite": "^3.0.0",
     "vite-plugin-eslint": "^1.7.0",
-    "vite-tsconfig-paths": "^3.5.0"
+    "vite-tsconfig-paths": "^3.5.0",
+    "zod": "^3.17.10"
   },
   "devDependencies": {
     "@types/react": "^18.0.15",

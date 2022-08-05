@@ -1,30 +1,52 @@
-import { useFetch } from './useFetch';
+import { useCallback } from 'react';
+import { useMutation } from 'react-query';
+import axios, { AxiosError } from 'axios';
+import { ErrorType, UserType } from '../recoil/atoms/userState';
 
-type Props = {
-  username?: string;
-  email?: string;
-  password?: string;
+const signUpFetch = async ({
+  email,
+  password,
+  username,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  const data = await axios.post<UserType>('https://api.realworld.io/api/users/login', {
+    user: { email, password, username },
+  });
+  return data.data;
 };
 
-type ReturnType =
-  | {
-      user: {
-        email: string;
-        token: string;
-        username: string;
-        bio: string;
-        image: string;
-      };
-    }
-  | {
-      errors: {
-        body: string;
-      };
-    };
+export const useSignup = ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  const mutation = useMutation<
+    UserType,
+    AxiosError<ErrorType>,
+    Record<'username' | 'email' | 'password', string>
+  >(signUpFetch);
+  // mutation.data
+  // mutation.error
+  // mutationFn arguments type
 
-export const useSignup = ({ username, email, password }: Props) =>
-  useFetch<ReturnType>({
-    url: 'https://api.realworld.io/api/users',
-    method: 'POST',
-    body: JSON.stringify({ user: { username, email, password } }),
-  });
+  const handleSignup = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      mutation.mutate({
+        username,
+        email,
+        password,
+      });
+    },
+    [username, email, password]
+  );
+
+  return { ...mutation, handleSignup };
+};

@@ -1,17 +1,12 @@
 import { useState } from 'react';
 
-export const useForm = (
-  initialValue: string
-): [
-  string,
-  React.Dispatch<React.SetStateAction<string>>,
-  (e: React.ChangeEvent<HTMLInputElement>) => void
-] => {
-  const [value, setValue] = useState(initialValue);
+// 비제어 컴포넌트, 제어 컴포넌트
+export const useForm = () => {
+  const [value, setValue] = useState('');
 
   function onChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value);
   }
 
-  return [value, setValue, onChangeValue];
+  return [value, onChangeValue] as const;
 };
